@@ -11,5 +11,5 @@ Open an issue if you need assistance or encounter any problems.
 
 ## Dependencies
 - lb-phone
-- Framework: ESX
+- **Framework: ESX**
 - xSound
