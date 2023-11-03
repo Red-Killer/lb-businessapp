@@ -1,10 +1,4 @@
-ESX = nil
-
-if exports['es_extended'] ~= nil then
-    ESX = exports['es_extended']:getSharedObject()
-else
-    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-end
+local QBCore = exports['qb-core']:GetCoreObject()
 
 
 local cooldown = {}
@@ -13,7 +7,7 @@ local cooldownTime = 30 -- cooldown in seconds
 local cache = {}
 
 
-ESX.RegisterServerCallback('lb-businessapp:getEmployees', function(src, cb)
+QBCore.Functions.CreateCallback('lb-businessapp:getEmployees', function(src, cb)
     if cooldown[src] == nil then
         cooldown[src] = os.time()
     else
@@ -28,20 +22,20 @@ ESX.RegisterServerCallback('lb-businessapp:getEmployees', function(src, cb)
         end
     end
     
-    local xPlayer = ESX.GetPlayerFromId(src)
+    local xPlayer = QBCore.Functions.GetPlayer(src)
     if xPlayer == nil then return end
 
-    local xJob = xPlayer.getJob()
+    local xJob = xPlayer.PlayerData.job
     if xJob.name == 'unemployed' then return end
     
     local employees = {}
 
-    local result = MySQL.Sync.fetchAll('SELECT * FROM users WHERE job = @job', {
+    local result = MySQL.Sync.fetchAll('SELECT * FROM players WHERE job = @job', {
         ['@job'] = xJob.name
     })
 
     for i=1, #result, 1 do
-        local xTarget = ESX.GetPlayerFromIdentifier(result[i].identifier)
+        local xTarget = QBCore.Functions.GetPlayerByCitizenId(result[i].identifier)
         local serverId = nil
 
         if xTarget ~= nil then 

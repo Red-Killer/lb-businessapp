@@ -1,15 +1,4 @@
-ESX = nil
-
-Citizen.CreateThread(function()
-    while ESX == nil do
-        Citizen.Wait(0)
-        if exports['es_extended'] ~= nil then
-            ESX = exports['es_extended']:getSharedObject()
-        else
-            TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-        end
-    end
-end)
+local QBCore = exports['qb-core']:GetCoreObject()
 
 local identifier = "rk_linkedin"
 
@@ -47,7 +36,7 @@ CreateThread(function ()
 end)
 
 RegisterNUICallback('getLinkedInData', function(data, cb)
-    ESX.TriggerServerCallback('lb-businessapp:getEmployees', function(employees)
+    QBCore.Functions.TriggerCallback('lb-businessapp:getEmployees', function(employees)
         cb(employees)
     end)
 end)
