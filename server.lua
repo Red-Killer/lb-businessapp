@@ -25,12 +25,12 @@ QBCore.Functions.CreateCallback('lb-businessapp:getEmployees', function(src, cb)
     local xPlayer = QBCore.Functions.GetPlayer(src)
     if xPlayer == nil then return end
 
-    local xJob = xPlayer.getJob()
+    local xJob = xPlayer.PlayerData.job
     if xJob.name == 'unemployed' then return end
     
     local employees = {}
 
-    local result = MySQL.Sync.fetchAll('SELECT * FROM player WHERE job = @job', {
+    local result = MySQL.Sync.fetchAll('SELECT * FROM players WHERE job = @job', {
         ['@job'] = xJob.name
     })
 
