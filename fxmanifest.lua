@@ -1,15 +1,12 @@
 fx_version "cerulean"
 game "gta5"
 
-author "Red Killer"
+author "Red Killer & MIKEEEE"
 description "Adding a business app to lb-phone"
-version "1.0.0"
+version "1.1.0"
 
 client_script "client.lua"
-server_scripts {
-    "@mysql-async/lib/MySQL.lua",
-    "server.lua",
-}
+server_script "server.lua"
 
 files {
     "ui/**/*"

@@ -56,3 +56,8 @@ RegisterNUICallback('addLinkedInToContact', function(data, cb)
     TriggerServerEvent('lb-businessapp:saveContact', data)
     cb('ok')
 end)
+
+RegisterNUICallback('CallPlayer', function(data, cb)
+    exports["lb-phone"]:CreateCall({ number = data.number, videoCall = data.videoCall, hideNumber = data.hideCallerId })
+    cb('ok')
+end)

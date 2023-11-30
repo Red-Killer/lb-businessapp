@@ -14,11 +14,13 @@ local cache = {}
 
 
 ESX.RegisterServerCallback('lb-businessapp:getEmployees', function(src, cb)
+    local employees = {}
     if cooldown[src] == nil then
         cooldown[src] = os.time()
     else
         if os.time() - cooldown[src] >= cooldownTime then
             cooldown[src] = nil
+            cache[src] = nil
         else
             if cache[src] ~= nil then
                 cb(cache[src])
@@ -32,26 +34,22 @@ ESX.RegisterServerCallback('lb-businessapp:getEmployees', function(src, cb)
     if xPlayer == nil then return end
 
     local xJob = xPlayer.getJob()
-    if xJob.name == 'unemployed' then return end
+    if xJob.name == 'unemployed' or xJob.name == 'offduty' then cb(employees) return end
     
-    local employees = {}
 
-    local result = MySQL.Sync.fetchAll('SELECT * FROM users WHERE job = @job', {
-        ['@job'] = xJob.name
-    })
+    local result = ESX.GetExtendedPlayers("job", xJob.name)
 
-    for i=1, #result, 1 do
-        local xTarget = ESX.GetPlayerFromIdentifier(result[i].identifier)
+    for _, xTarget in pairs(result) do
         local serverId = nil
 
         if xTarget ~= nil then 
             serverId = xTarget.source
         end
 
-        local phone = exports["lb-phone"]:GetEquippedPhoneNumber(serverId or result[i].identifier)
+        local phone = exports["lb-phone"]:GetEquippedPhoneNumber(serverId)
 
         local employee = {
-            name = result[i].firstname .. ' ' .. result[i].lastname,
+            name = xTarget.getName(),
             serverId = serverId,
             phone = phone
         }
