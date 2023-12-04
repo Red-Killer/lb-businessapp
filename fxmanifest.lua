@@ -6,7 +6,10 @@ description "Adding a business app to lb-phone"
 version "1.1.0"
 
 client_script "client.lua"
-server_script "server.lua"
+server_scripts { 
+    "@oxmysql/lib/MySQL.lua",
+    "server.lua" 
+}
 
 files {
     "ui/**/*"

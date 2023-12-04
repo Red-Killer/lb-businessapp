@@ -1,5 +1,5 @@
 ESX = nil
-
+local UserTable = {}
 if exports['es_extended'] ~= nil then
     ESX = exports['es_extended']:getSharedObject()
 else
@@ -12,6 +12,33 @@ local cooldownTime = 30 -- cooldown in seconds
 
 local cache = {}
 
+AddEventHandler('onResourceStart', function(resourceName)
+    if GetCurrentResourceName() == resourceName then
+        UserTable = MySQL.Sync.fetchAll('SELECT identifier, firstname, lastname, job FROM users')
+    end
+end)
+
+RegisterNetEvent('lb-businessapp:addUserTable', function()
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local isListed = false
+    for _, result in pairs(UserTable) do
+        if result.identifier == xPlayer.identifier then
+            isListed = true
+        end
+    end
+
+    if not isListed then
+        local data = {
+            identifier = xPlayer.identifier,
+            firstname = xPlayer.firstname,
+            lastname = xPlayer.lastname,
+            job = xPlayer.getJob().name
+        }
+        table.insert(UserTable, data)
+        print("added new player to usertable with id: " .. xPlayer.source)
+    end
+    
+end)
 
 ESX.RegisterServerCallback('lb-businessapp:getEmployees', function(src, cb)
     local employees = {}
@@ -36,25 +63,26 @@ ESX.RegisterServerCallback('lb-businessapp:getEmployees', function(src, cb)
     local xJob = xPlayer.getJob()
     if xJob.name == 'unemployed' or xJob.name == 'offduty' then cb(employees) return end
     
-
-    local result = ESX.GetExtendedPlayers("job", xJob.name)
-
-    for _, xTarget in pairs(result) do
+    for _, result in pairs(UserTable) do
+        local xTarget = ESX.GetPlayerFromIdentifier(result.identifier)
         local serverId = nil
 
         if xTarget ~= nil then 
             serverId = xTarget.source
         end
 
-        local phone = exports["lb-phone"]:GetEquippedPhoneNumber(serverId)
+        if  result.job == xJob.name then
+        
+            local phone = exports["lb-phone"]:GetEquippedPhoneNumber(serverId)
 
-        local employee = {
-            name = xTarget.getName(),
-            serverId = serverId,
-            phone = phone
-        }
-
-        table.insert(employees, employee)
+            local employee = {
+                name = result.firstname .. " " .. result.lastname,
+                serverId = serverId,
+                phone = phone
+            }
+            table.insert(employees, employee)
+        end
+        
     end
 
     cache[src] = employees
