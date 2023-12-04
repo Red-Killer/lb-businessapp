@@ -98,3 +98,12 @@ RegisterNetEvent('lb-businessapp:saveContact', function(data)
 
     exports["lb-phone"]:AddContact(srcNumber, { firstname = data.fname, lastname = data.lname, number = data.number })
 end)
+
+RegisterNetEvent('esx:setJob', function(src, job, lastJob)
+    local xPlayer = ESX.GetPlayerFromId(src)
+    for _, result in pairs(UserTable) do
+        if result.identifier == xPlayer.identifier then
+            result.job = job.name
+        end
+    end
+end)

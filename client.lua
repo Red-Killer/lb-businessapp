@@ -46,18 +46,8 @@ CreateThread(function ()
     end)
 end)
 
-CreateThread(function()
-    local notLoaded = true
-    while notLoaded do
-        local sleep = 100
-        local IsLoaded = ESX.IsPlayerLoaded()
-        if IsLoaded then
-            TriggerServerEvent('lb-businessapp:addUserTable')
-            notLoaded = false
-            sleep = 0
-        end
-        Wait(sleep)
-    end
+RegisterNetEvent('esx:playerLoaded', function(xPlayer)
+    TriggerServerEvent('lb-businessapp:addUserTable')
 end)
 
 RegisterNUICallback('getLinkedInData', function(data, cb)
