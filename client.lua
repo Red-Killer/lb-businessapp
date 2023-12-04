@@ -46,10 +46,6 @@ CreateThread(function ()
     end)
 end)
 
-RegisterNetEvent('esx:playerLoaded', function(xPlayer)
-    TriggerServerEvent('lb-businessapp:addUserTable')
-end)
-
 RegisterNUICallback('getLinkedInData', function(data, cb)
     ESX.TriggerServerCallback('lb-businessapp:getEmployees', function(employees)
         cb(employees)

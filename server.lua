@@ -18,28 +18,6 @@ AddEventHandler('onResourceStart', function(resourceName)
     end
 end)
 
-RegisterNetEvent('lb-businessapp:addUserTable', function()
-    local xPlayer = ESX.GetPlayerFromId(source)
-    local isListed = false
-    for _, result in pairs(UserTable) do
-        if result.identifier == xPlayer.identifier then
-            isListed = true
-        end
-    end
-
-    if not isListed then
-        local data = {
-            identifier = xPlayer.identifier,
-            firstname = xPlayer.firstname,
-            lastname = xPlayer.lastname,
-            job = xPlayer.getJob().name
-        }
-        table.insert(UserTable, data)
-        print("added new player to usertable with id: " .. xPlayer.source)
-    end
-    
-end)
-
 ESX.RegisterServerCallback('lb-businessapp:getEmployees', function(src, cb)
     local employees = {}
     if cooldown[src] == nil then
@@ -105,5 +83,25 @@ RegisterNetEvent('esx:setJob', function(src, job, lastJob)
         if result.identifier == xPlayer.identifier then
             result.job = job.name
         end
+    end
+end)
+
+RegisterNetEvent('esx:playerLoaded', function(src, xPlayer, isNew)
+    local isListed = false
+    for _, result in pairs(UserTable) do
+        if result.identifier == xPlayer.identifier then
+            isListed = true
+        end
+    end
+
+    if not isListed then
+        local data = {
+            identifier = xPlayer.identifier,
+            firstname = xPlayer.firstname,
+            lastname = xPlayer.lastname,
+            job = xPlayer.getJob().name
+        }
+        table.insert(UserTable, data)
+        print("added new player to usertable with id: " .. xPlayer.source)
     end
 end)
