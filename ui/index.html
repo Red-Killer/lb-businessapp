@@ -141,10 +141,10 @@
                                         }
                                     },
                                     {
-                                        title: 'Call (Buggy)',
+                                        title: 'Call',
                                         color: 'blue',
                                         cb: () => {
-                                            fetchNui('Phone', { action: "call", number: employee.phone, videoCall: false, hideCallerId: false }, 'lb-phone');
+                                            fetchNui('CallPlayer', { number: employee.phone, videoCall: false, hideCallerId: false });
                                         }
                                     }
                                 ]
